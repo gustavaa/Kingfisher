@@ -143,21 +143,22 @@ public class KingfisherManager {
     ///    This method will first check whether the requested `resource` is already in cache or not. If cached,
     ///    it returns `nil` and invoke the `completionHandler` after the cached image retrieved. Otherwise, it
     ///    will download the `resource`, store it in cache, then call `completionHandler`.
-    @discardableResult
     public func retrieveImage(
         with resource: Resource,
         options: KingfisherOptionsInfo? = nil,
         progressBlock: DownloadProgressBlock? = nil,
         downloadTaskUpdated: DownloadTaskUpdatedBlock? = nil,
-        completionHandler: ((Result<RetrieveImageResult, KingfisherError>) -> Void)?) -> DownloadTask?
+        completionHandler: ((Result<RetrieveImageResult, KingfisherError>) -> Void)?)
     {
-        return retrieveImage(
-            with: resource.convertToSource(),
-            options: options,
-            progressBlock: progressBlock,
-            downloadTaskUpdated: downloadTaskUpdated,
-            completionHandler: completionHandler
-        )
+        DispatchQueue.main.async {
+            self.retrieveImage(
+                with: resource.convertToSource(),
+                options: options,
+                progressBlock: progressBlock,
+                downloadTaskUpdated: downloadTaskUpdated,
+                completionHandler: completionHandler
+            )
+        }
     }
 
     /// Gets an image from a given resource.
