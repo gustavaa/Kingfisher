@@ -26,6 +26,7 @@
 
 
 import Foundation
+import os.signpost
 
 /// The downloading progress block type.
 /// The parameter value is the `receivedSize` of current response.
@@ -509,8 +510,17 @@ public class KingfisherManager {
         // 1. Check whether the image was already in target cache. If so, just get it.
         let targetCache = options.targetCache ?? cache
         let key = source.cacheKey
-        let targetImageCached = targetCache.imageCachedType(
-            forKey: key, processorIdentifier: options.processor.identifier)
+        var targetImageCached: CacheType
+        if #available(iOS 12, *){
+            let osLog = OSLog(subsystem: "Kingfisher", category: OSLog.Category.pointsOfInterest)
+            os_signpost(.begin, log: osLog, name: "Cache lookup")
+            targetImageCached = targetCache.imageCachedType(
+                forKey: key, processorIdentifier: options.processor.identifier)
+            os_signpost(.end, log: osLog, name: "Cache lookup")
+        } else {
+            targetImageCached = targetCache.imageCachedType(
+                forKey: key, processorIdentifier: options.processor.identifier)
+        }
         
         let validCache = targetImageCached.cached &&
             (options.fromMemoryCacheOrRefresh == false || targetImageCached == .memory)
