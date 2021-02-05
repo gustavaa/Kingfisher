@@ -150,14 +150,13 @@ public class KingfisherManager {
         downloadTaskUpdated: DownloadTaskUpdatedBlock? = nil,
         completionHandler: ((Result<RetrieveImageResult, KingfisherError>) -> Void)?)
     {
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .background).async {
             self.retrieveImage(
                 with: resource.convertToSource(),
                 options: options,
                 progressBlock: progressBlock,
                 downloadTaskUpdated: downloadTaskUpdated,
-                completionHandler: completionHandler
-            )
+                completionHandler: completionHandler)
         }
     }
 
